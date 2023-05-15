@@ -20,5 +20,4 @@ fun main() {
     val CustomerDiscount = if (regularCustomer) ((sum - discount) * 0.01 + discount).toInt() else discount
     println("Скидка составила $CustomerDiscount рублей")
 
-
 }
