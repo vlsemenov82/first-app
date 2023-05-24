@@ -25,7 +25,7 @@ class MainKtTest {
     fun visaMirComission() {
         val transaction = 1000
         val comission = if ((transaction * 0.075).toInt() > 35) (transaction * 0.075).toInt() else 35
-        assertEquals(75, comission)
+        assertEquals(750, comission)
     }
 
     @Test
