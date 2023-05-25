@@ -5,47 +5,101 @@ import org.junit.Assert.*
 class MainKtTest {
 
     @Test
-    fun sumForComission() {
-        val lastTransaction = 74000
-        val transaction = 2000
-        val totalLimit = 75000
-
-        val result = if (lastTransaction + transaction > totalLimit) lastTransaction + transaction - totalLimit else 0
-        assertEquals(1000, result)
+    fun MastercardComissionLimit() {
+        val result = paymentComission("MasterCard", 74000, 2000)
+        assertEquals(26, result)
+    }
+    @Test
+    fun MastercardComissionDayLimit() {
+        val result = paymentComission("MasterCard", 0, 160000)
+        assertEquals(530, result)
     }
 
     @Test
-    fun maestroMastercardComission() {
-        val sumForComission = 20000
-        val comission = if (sumForComission > 0) (sumForComission * 0.06 + 20).toInt() else 0
-        assertEquals(1220, comission)
+    fun MastercardComissionMonthLimit() {
+        val result = paymentComission("MasterCard", 500000, 101000)
+        assertEquals(3176, result)
     }
 
     @Test
-    fun visaMirComission() {
-        val transaction = 1000
-        val comission = if ((transaction * 0.075).toInt() > 35) (transaction * 0.075).toInt() else 35
-        assertEquals(750, comission)
+    fun MastercardComissionNoLimit() {
+        val result = paymentComission("MasterCard", 50000, 20000)
+        assertEquals(0, result)
     }
 
     @Test
-    fun vkPayComission() {
-        val transaction = 16000
-        val maxVkpayLimit = 15000
-
-        val result = if (transaction > maxVkpayLimit) "Превышен дневной лимит переводов" else "Операция проведена"
-        assertEquals("Превышен дневной лимит переводов", result)
+    fun MaestroComissionLimit() {
+        val result = paymentComission("Maestro", 74000, 2000)
+        assertEquals(26, result)
+    }
+    @Test
+    fun MaestroComissionDayLimit() {
+        val result = paymentComission("Maestro", 0, 160000)
+        assertEquals(530, result)
     }
 
     @Test
-    fun mastercartPaymentLimit() {
-        val transaction = 16000
-        val maxDayCardLimit = 150000
-        val lastTransaction = 20000
-        val maxMonthCardLimit = 600000
-        val resultDayLimit = if (transaction > maxDayCardLimit) "Превышен дневной лимит переводов" else "Операция проведена"
-        val resultMonthLimit = if (lastTransaction + transaction > maxMonthCardLimit) "Превышен месячный лимит переводов" else "Операция проведена"
-        assertEquals("Операция проведена", resultDayLimit)
-        assertEquals("Операция проведена", resultMonthLimit)
+    fun MaestroComissionMonthLimit() {
+        val result = paymentComission("Maestro", 500000, 101000)
+        assertEquals(3176, result)
+    }
+
+    @Test
+    fun MaestroComissionNoLimit() {
+        val result = paymentComission("Maestro", 50000, 20000)
+        assertEquals(0, result)
+    }
+
+
+    @Test
+    fun visaComissionLimit() {
+        val result = paymentComission("Visa", 0, 2000)
+        assertEquals(35, result)
+    }
+
+    @Test
+    fun visaComissionNoLimit() {
+        val result = paymentComission("Visa", 0, 10000)
+        assertEquals(75, result)
+    }
+
+    @Test
+    fun mirComissionLimit() {
+        val result = paymentComission("Мир", 0, 2000)
+        assertEquals(35, result)
+    }
+
+    @Test
+    fun mirComissionNoLimit() {
+        val result = paymentComission("Мир", 0, 10000)
+        assertEquals(75, result)
+    }
+
+    @Test
+    fun vkPayComissionDayLimit() {
+
+        val result = paymentComission("Vkpay", 0, 16000)
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun vkPayComissionNoDayLimit() {
+
+        val result = paymentComission("Vkpay", 0, 10000)
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun vkPayComissionMonthLimit() {
+
+        val result = paymentComission("Vkpay", 0, 45000)
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun vkPayComissionNoMonthLimit() {
+
+        val result = paymentComission("Vkpay", 0, 35000)
+        assertEquals(0, result)
     }
 }
