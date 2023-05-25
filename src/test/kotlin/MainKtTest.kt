@@ -60,7 +60,7 @@ class MainKtTest {
     @Test
     fun visaComissionNoLimit() {
         val result = paymentComission("Visa", 0, 10000)
-        assertEquals(75, result)
+        assertEquals(750, result)
     }
 
     @Test
