@@ -1,41 +1,28 @@
-fun main() {
-
 //    Задача 1
+fun main() {
+    val commentOne = Post.Comments()
+    println(commentOne.count)
 
-    println(paymentComission("MasterCard", 75000, 6000))
-}
+    val postOne = Post(0, 26, 15, 8, 1685464424, "Hello, World", "Post", true, true, true, commentOne)
+    println(postOne.text)
 
-fun paymentComission(typeOfCard: String, lastTransaction: Int, transaction: Int): Int {
-    val maxDayCardLimit = 150000
-    val maxMonthCardLimit = 600000
-    val totalLimit = 75000
-    var comission = 0
-    val maxVkpayLimit = 15000
-    val maxMonthVkpayLimit = 40000
+    val postTwo = Post(0, 26, 15, 8, 1685464425, "Hello, Kotlin", "Post", true, true, true, commentOne)
+    println(postTwo.text)
 
-    when (typeOfCard) {
-        "MasterCard", "Maestro", "Visa", "Мир" -> {
-            if (transaction > maxDayCardLimit) println("Превышен дневной лимит переводов")
-            if (lastTransaction + transaction > maxMonthCardLimit) println("Превышен месячный лимит переводов")
+    val postThree = Post(2, 26, 15, 8, 1685464426, "Hello, Earth", "Post", true, true, true, commentOne)
 
-            when (typeOfCard) {
-                "MasterCard", "Maestro" -> {
-                    val sumForComission =
-                        if (lastTransaction + transaction > totalLimit) lastTransaction + transaction - totalLimit else 0
-                    comission = if (sumForComission > 0) (sumForComission * 0.006 + 20).toInt() else 0
-                }
+    WallService.add(postOne)
+    println(postOne.id)
 
-                "Visa", "Мир" -> {
-                    comission = if ((transaction * 0.0075).toInt() > 35) (transaction * 0.0075).toInt() else 35
-                }
-            }
-        }
+    WallService.add(postTwo)
+    println(postTwo.id)
+    println(postTwo.text)
 
-        "Vkpay" -> {
-            if (transaction > maxVkpayLimit) println("Превышен дневной лимит переводов")
-            if (lastTransaction + transaction > maxMonthVkpayLimit) println("Превышен месячный лимит переводов")
-            comission = 0
-        }
-    }
-    return comission
+    println(WallService.update(postThree))
+
+
+
+
+
+
 }
