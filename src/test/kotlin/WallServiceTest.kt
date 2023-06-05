@@ -12,29 +12,44 @@ class WallServiceTest {
 
     @Test
     fun addExisting() {
-        val commentOne = Post.Comments()
-        val post = Post(0, 0, 0, 0, 1685464427, "Hello, Netology", "Post", true, true, true, commentOne)
-        WallService.add(post)
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(1, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
+            "Post", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
+        WallService.addPost(post)
         val result = post.id
         assertEquals(1, result)
+    }
+    @Test
+    fun updateExistingTrue() {
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(1, 0, 0, 0, 1685464429, "Hello, me", 0, 0,
+            "Post", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
+        val post2 = Post(1, 0, 0, 0, 1685464430, "Hello, sun", 0, 0,
+            "Post", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
+
+        WallService.addPost(post)
+        val result =  WallService.update(post2)
+        assertEquals(true, result)
     }
 
     @Test
     fun updateExistingFalse() {
-        val commentOne = Post.Comments()
-        val post = Post(2, 0, 0, 0, 1685464428, "Hello, sun", "Post", true, true, true, commentOne)
-        WallService.update(post)
-        val result = false
-        assertEquals(false, result)
-    }
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(1, 0, 0, 0, 1685464430, "Hello, sun", 0, 0,
+            "Post", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
 
-    @Test
-    fun updateExistingTrue() {
-        val commentOne = Post.Comments()
-        val post = Post(1, 0, 0, 0, 1685464428, "Hello, me", "Post", true, true, true, commentOne)
-        WallService.update(post)
-        val result = true
-        assertEquals(true, result)
+        val result =  WallService.update(post)
+        assertEquals(false, result)
     }
 
 }
