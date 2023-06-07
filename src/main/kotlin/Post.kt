@@ -25,7 +25,8 @@ data class Post(
     val likes: Likes,
     val reposts: Reposts,
     val geo: Geo,
-    val attachments: Array<Attachment> = emptyArray()
+    val attachments: Array<Attachment> = arrayOf(AudioAttachment(1, 1, "Audio", Audio()),
+        PhotoAttachment(1,1,"Photo", Photo()))
 )
 
 data class Comments(
@@ -57,68 +58,102 @@ data class Geo(
 interface Attachment {
     val id: Int
     val ownerId: Int
+    val type: String
 }
 
-class AudioAttachment(override val id: Int, override val ownerId: Int) : Attachment {
-    val artist: String = ""
-    val title: String = ""
-    val duration: Int = 0
-    val url: String = ""
-    val lyricsID: Int = 0
-    val albumID: Int = 0
-    val genreId: Int = 0
-    val noSearch: Boolean = true
+data class AudioAttachment(
+    override val id: Int,
+    override val ownerId: Int,
+    override val type: String,
+    val audio: Audio
+) : Attachment
+
+data class Audio(
+    val artist: String = "",
+    val title: String = "",
+    val duration: Int = 0,
+    val url: String = "",
+    val lyricsID: Int = 0,
+    val albumID: Int = 0,
+    val genreId: Int = 0,
+    val noSearch: Boolean = true,
     val isHq: Boolean = true
-}
+)
 
-class PhotoAttachment(override val id: Int, override val ownerId: Int) : Attachment {
-    val albumId: Int = 0
-    val userId: Int = 0
-    val text: String = ""
-    val date: Int = 0
-    val width: Int = 0
+data class PhotoAttachment(
+    override val id: Int,
+    override val ownerId: Int,
+    override val type: String,
+    val photo: Photo
+) : Attachment
+
+data class Photo(
+    val albumId: Int = 0,
+    val userId: Int = 0,
+    val text: String = "",
+    val date: Int = 0,
+    val width: Int = 0,
     val height: Int = 0
-}
+)
 
-class PostedPhotoAttachment(override val id: Int, override val ownerId: Int) : Attachment {
-    val photo130: String = ""
+data class PostedPhotoAttachment(
+    override val id: Int,
+    override val ownerId: Int,
+    override val type: String,
+    val photo: PostedPhoto
+) : Attachment
+
+data class PostedPhoto(
+    val photo130: String = "",
     val photo604: String = ""
-}
+)
 
-class GraffityAttachment(override val id: Int, override val ownerId: Int) : Attachment {
-    val photo130: String = ""
+data class GraffityAttachment(
+    override val id: Int,
+    override val ownerId: Int,
+    override val type: String,
+    val graffity: Graffity
+) : Attachment
+
+data class Graffity(
+    val photo130: String = "",
     val photo604: String = ""
-}
+)
 
-class HistoryAttachment(override val id: Int, override val ownerId: Int) : Attachment {
-    val date: Int = 0
-    val expiresAt: Int = 0
-    val isExpired: Boolean = false
-    val isDelited: Boolean = false
+data class HistoryAttachment(
+    override val id: Int,
+    override val ownerId: Int,
+    override val type: String,
+    val history: History
+) : Attachment
+
+data class History(
+    val date: Int = 0,
+    val expiresAt: Int = 0,
+    val isExpired: Boolean = false,
+    val isDelited: Boolean = false,
     val canSee: Boolean = false
-}
+)
 
 
 object WallService {
     private var posts = emptyArray<Post>()
-    private var reposts = emptyArray<Post>()
     private var count = 0
-    fun addPost(post: Post): Post {
-        posts += post
-        count++
-        post.id = count
+    fun addPost(newPost: Post): Post {
+        posts += newPost.copy(id = ++count)
         return posts.last()
     }
 
-    fun update(post: Post): Boolean {
+    fun update(newPost: Post): Boolean {
         for ((index, post) in posts.withIndex()) {
-            if (posts[index].id == post.id) {
-                posts[index] = post
+            if (post.id == newPost.id) {
+                posts[index] = newPost.copy()
                 return true
             }
         }
         return false
     }
+
     fun clear() {
         posts = emptyArray()
         count = 0
