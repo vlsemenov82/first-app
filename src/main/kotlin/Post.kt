@@ -202,6 +202,8 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
+        comments = emptyArray()
+        reportComments = emptyArray()
         count = 0
     }
 }
