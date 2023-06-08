@@ -52,4 +52,53 @@ class WallServiceTest {
         assertEquals(false, result)
     }
 
+    @Test(expected = PostNotFoundException::class)
+    fun shouldIdThrow() {
+        val commentOne = Comment(1, 1, 168546441, "Good Post")
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(
+            1, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
+            "Photo", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo
+        )
+        WallService.addPost(post)
+        WallService.creatComment(2, commentOne)
+    }
+
+    @Test(expected = CommentNotFoundException::class)
+    fun shouldIdCommentThrow() {
+        val commentOne = Comment(1, 1, 168546441, "Good Post")
+        val reportComment = ReportComments(1,1, 1)
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(
+            1, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
+            "Photo", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo
+        )
+        WallService.addPost(post)
+        WallService.creatComment(1, commentOne)
+        WallService.addReportComment(2, reportComment)
+    }
+
+    @Test(expected = ReportCommentNotFoundException::class)
+    fun shouldIdReportCommentThrow() {
+        val commentOne = Comment(1, 1, 168546441, "Good Post")
+        val reportComment = ReportComments(1,1, 9)
+        val likes = Likes(0, true, true, true);
+        val repost = Reposts(0, true);
+        val geo = Geo("Страна", "0.0.0.0", "Россия")
+        val post = Post(
+            1, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
+            "Photo", true, true, true, true, "BBC news", 0, "post",
+            2, original = null, true, true, true, 1, comments = null, likes, repost, geo
+        )
+        WallService.addPost(post)
+        WallService.creatComment(1, commentOne)
+        WallService.addReportComment(1, reportComment)
+    }
+
 }

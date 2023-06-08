@@ -7,9 +7,7 @@ fun main() {
     val post1 = Post(
         0, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
         "Photo", true, true, true, true, "BBC news", 0, "post",
-        2, original = null, true, true, true, 1, comments = null, likes, repost, geo,
-
-
+        2, original = null, true, true, true, 1, comments = null, likes, repost, geo
     )
 
     val post2 = Post(
@@ -29,5 +27,11 @@ fun main() {
 
     println(WallService.update(post3))
 
+    val commentOne = Comment(1, 1, 168546441, "Good Post")
 
+    println(WallService.creatComment(1, commentOne))
+    //println(WallService.creatComment(3, commentOne))
+
+    val reportComment = ReportComments(1,1, 9)
+    println(WallService.addReportComment(1, reportComment))
 }

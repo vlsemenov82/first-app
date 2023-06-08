@@ -1,3 +1,5 @@
+import java.lang.RuntimeException
+
 data class Post(
     var id: Int,
     val ownerId: Int,
@@ -30,11 +32,25 @@ data class Post(
 )
 
 data class Comments(
-    val count: Int = 20,
+    val count: Int,
+    val text: String,
     val canPost: Boolean = true,
     val groupsCanPost: Boolean = true,
     val canClose: Boolean = true,
     val canOpen: Boolean = true
+)
+
+data class Comment(
+    val id: Int,
+    val fromId: Int,
+    val date: Int,
+    val text: String
+)
+
+data class ReportComments(
+    val ownerId: Int,
+    val commentId: Int,
+    val reason: Int
 )
 
 data class Likes(
@@ -135,10 +151,17 @@ data class History(
     val canSee: Boolean = false
 )
 
+class PostNotFoundException(massage: String): RuntimeException(massage)
+class CommentNotFoundException(massage: String): RuntimeException(massage)
+class ReportCommentNotFoundException(massage: String): RuntimeException(massage)
+
 
 object WallService {
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
+    private var reportComments = emptyArray<ReportComments>()
     private var count = 0
+
     fun addPost(newPost: Post): Post {
         posts += newPost.copy(id = ++count)
         return posts.last()
@@ -154,11 +177,33 @@ object WallService {
         return false
     }
 
+    fun creatComment(postId: Int, comment: Comment): Comment {
+        for ((index, post) in posts.withIndex()) {
+            if (post.id == postId) {
+                comments += comment
+                return comments.last()
+            }
+        }
+        throw PostNotFoundException("no comment with id $postId")
+    }
+
+    fun addReportComment(commentId: Int, reportComment: ReportComments): ReportComments {
+        for ((index, comment) in comments.withIndex()) {
+            if (comment.id == commentId) {
+                reportComments += reportComment
+                if (reportComment.reason < 0 || reportComment.reason > 8) {
+                    throw ReportCommentNotFoundException("no reason with id ${reportComment.reason}")
+                }
+                return reportComments.last()
+            }
+        }
+        throw CommentNotFoundException("no comment with id $commentId")
+    }
+
     fun clear() {
         posts = emptyArray()
         count = 0
     }
 }
-
 
 
