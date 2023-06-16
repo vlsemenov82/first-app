@@ -77,8 +77,6 @@ interface Attachment {
     val type: String
 }
 
-
-
 data class AudioAttachment(
     override val id: Int,
     override val ownerId: Int,
@@ -158,13 +156,14 @@ class CommentNotFoundException(massage: String): RuntimeException(massage)
 class ReportCommentNotFoundException(massage: String): RuntimeException(massage)
 
 
-object WallService {
+object WallService : CrudService<Post> {
     private var posts = emptyArray<Post>()
     private var comments = emptyArray<Comment>()
     private var reportComments = emptyArray<ReportComments>()
     private var count = 0
 
-    fun addPost(newPost: Post): Post {
+
+    override fun add(newPost: Post): Post {
         posts += newPost.copy(id = ++count)
         return posts.last()
     }
@@ -208,6 +207,7 @@ object WallService {
         reportComments = emptyArray()
         count = 0
     }
+
 }
 
 

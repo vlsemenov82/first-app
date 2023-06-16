@@ -18,7 +18,7 @@ class WallServiceTest {
         val post = Post(1, 0, 0, 0, 1685464427, "Hello, Netology", 0, 0,
             "Post", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
-        WallService.addPost(post)
+        WallService.add(post)
         val result = post.id
         assertEquals(1, result)
     }
@@ -34,7 +34,7 @@ class WallServiceTest {
             "Post", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo)
 
-        WallService.addPost(post)
+        WallService.add(post)
         val result =  WallService.update(post2)
         assertEquals(true, result)
     }
@@ -63,7 +63,7 @@ class WallServiceTest {
             "Photo", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo
         )
-        WallService.addPost(post)
+        WallService.add(post)
         WallService.creatComment(2, commentOne)
     }
 
@@ -78,7 +78,7 @@ class WallServiceTest {
             "Photo", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo
         )
-        WallService.addPost(post)
+        WallService.add(post)
         val result = WallService.creatComment(1, commentOne)
         assertEquals(commentOne, result)
 
@@ -96,7 +96,7 @@ class WallServiceTest {
             "Photo", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo
         )
-        WallService.addPost(post)
+        WallService.add(post)
         WallService.creatComment(1, commentOne)
         WallService.addReportComment(2, reportComment)
     }
@@ -113,7 +113,7 @@ class WallServiceTest {
             "Photo", true, true, true, true, "BBC news", 0, "post",
             2, original = null, true, true, true, 1, comments = null, likes, repost, geo
         )
-        WallService.addPost(post)
+        WallService.add(post)
         WallService.creatComment(1, commentOne)
         WallService.addReportComment(1, reportComment)
     }

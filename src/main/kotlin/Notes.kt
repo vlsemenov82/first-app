@@ -1,40 +1,38 @@
+import java.util.Objects
+
 data class Notes(
     var notesId: Int,
     val title: String,
     val text: String,
-    var notesComments: NotesComments?
-
-) {
-    operator fun set(index: Int, value: Notes) {
-    }
-
-    operator fun get(index: Int) {
-    }
-}
+    val notesComments: MutableList<NotesComments>
+)
 
 data class NotesComments(
     var commentId: Int,
+    var notesId: Int,
     var isDelete: Boolean = false,
-    val massage: String
-) {
-    operator fun get(index: Int) {
-    }
+    var massage: String
+)
+
+interface CrudService<E> {
+    fun add(obj: E): Any
 }
 
-object NotesService {
+object NotesService : CrudService<Notes> {
     private val notes = mutableListOf<Notes>()
-    private val notesComments = mutableListOf<NotesComments>()
     private var countNotes = 0
     private var countComment = 0
 
-    fun addNotes(newNotes: Notes): MutableList<Notes> {
+
+
+    override fun add(newNotes: Notes): MutableList<Notes> {
         notes.add(newNotes.copy(notesId = ++countNotes))
         return notes
     }
 
-    fun deleteNotes(newNotes: Notes): MutableList<Notes> {
+    fun delete(newNotes: Notes): MutableList<Notes> {
         notes.remove(newNotes)
-        notesComments.remove(newNotes.notesComments)
+        newNotes.notesComments.clear()
         return notes
     }
 
@@ -64,8 +62,8 @@ object NotesService {
         for ((index, note) in notes.withIndex()) {
             if (note.notesId == notesId) {
                 comment.commentId = ++countComment
-                notesComments.add(comment)
-                notes[index].notesComments = comment
+                comment.notesId = notesId
+                note.notesComments.add(comment)
                 return true
             }
         }
@@ -74,11 +72,12 @@ object NotesService {
 
     fun deleteComment(notesId: Int, comment: NotesComments): Boolean {
         for ((index, note) in notes.withIndex()) {
-            if (note.notesId == notesId && !note.notesComments!!.isDelete) {
-                notes[index].notesComments = null
-                notesComments.remove(comment)
-                comment.isDelete = true
-                notesComments.add(comment)
+            if (note.notesId == notesId) {
+                for ((index, notesComments) in note.notesComments.withIndex()) {
+                    if (note.notesComments[index].commentId == comment.commentId) {
+                        note.notesComments[index].isDelete = true
+                    }
+                }
                 return true
             }
         }
@@ -87,35 +86,34 @@ object NotesService {
 
     fun editComment(newComment: NotesComments): Boolean {
         for ((index, note) in notes.withIndex()) {
-            if (note.notesComments!!.commentId == newComment.commentId && !note.notesComments!!.isDelete) {
-                notesComments.remove(notes[index].notesComments)
-                notes[index].notesComments = newComment
-                notesComments.add(newComment)
+            if (note.notesComments[index].commentId == newComment.commentId && !note.notesComments[index].isDelete) {
+                note.notesComments[index].massage = newComment.massage
                 return true
             }
         }
         return false
     }
 
-    fun getComments(): MutableList<NotesComments> {
+    fun getComments(notesId: Int): MutableList<NotesComments> {
         val nonDeleteNotesComments = mutableListOf<NotesComments>()
-        for ((index, noteComment) in notesComments.withIndex()) {
-            if (noteComment.isDelete == false) {
-                nonDeleteNotesComments.add(notesComments[index])
+        for ((index, note) in notes.withIndex()) {
+            if (notes[index].notesId == notesId) {
+                for ((index, notesComments) in note.notesComments.withIndex()) {
+                    if (!note.notesComments[index].isDelete) {
+                        nonDeleteNotesComments.add(note.notesComments[index])
+                    }
+                }
             }
         }
         return nonDeleteNotesComments
     }
 
     fun restoreComment(notesId: Int, comment: NotesComments): Boolean {
-        for ((index, noteComment) in notesComments.withIndex()) {
-            if (notesComments[index].commentId == comment.commentId && notesComments[index].isDelete) {
-                notesComments[index] = comment
-                notesComments[index].isDelete = false
-                comment.isDelete = false
-                for ((index, note) in notes.withIndex()) {
-                    if (note.notesId == notesId) {
-                        notes[index].notesComments = comment
+        for ((index, note) in notes.withIndex()) {
+            if (notes[index].notesId == notesId) {
+                for ((index, notesComments) in note.notesComments.withIndex()) {
+                    if (note.notesComments[index].commentId == comment.commentId && note.notesComments[index].isDelete) {
+                        note.notesComments[index].isDelete = false
                         return true
                     }
                 }
@@ -126,7 +124,6 @@ object NotesService {
 
     fun clear() {
         notes.clear()
-        notesComments.clear()
         countNotes = 0
         countComment = 0
     }

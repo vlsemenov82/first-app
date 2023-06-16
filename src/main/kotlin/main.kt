@@ -16,8 +16,8 @@ fun main() {
         2, original = null, true, true, true, 1, comments = null, likes, repost, geo
     )
 
-    println(WallService.addPost(post1))
-    println(WallService.addPost(post2))
+    println(WallService.add(post1))
+    println(WallService.add(post2))
 
     val post3 = Post(
         2, 0, 0, 0, 1685464427, "Test", 0, 0,
